@@ -1,4 +1,4 @@
-from dash import dash, html, dcc, Output, Input
+from dash import dash, html, dcc, Output, Input, dash_table
 import dash_bootstrap_components as dbc
 from dash_bootstrap_templates import load_figure_template
 
@@ -97,10 +97,10 @@ app.layout = html.Div([
                          
                          dbc.Col([dcc.Graph(id='grafico-03-data')], lg=6),
                          
-                         dbc.Col([dbc.Row(dcc.Graph()), dbc.Row(dcc.Graph())], lg=4)
+                         dbc.Col(dcc.Graph(id='grafico-04-pizza'), lg=4)
                          ]), 
                  
-                dbc.Row()], 
+                dbc.Row(html.Div(id='table'))], 
         lg=6)
         
     ], style={'margin':'8px'})
@@ -139,6 +139,41 @@ def mostrar_data(data):
     
     return fig
 
+@app.callback(
+    Output('grafico-04-pizza', 'figure'),
+    Input('my-date-picker-single', 'date')
+)
+def update_pizza(data):
+    date_object = date.fromisoformat(data)
+    dia = date_object.day
+    mes = date_object.month
+    
+    df_analise_dia = df.loc[(df['day']==dia) & (df['month']==mes)]
+    
+    fig = px.pie(data_frame=df_analise_dia, names='pizza_category', values='total_price', hole=.5)
+    
+    return fig
+    
+    
+@app.callback(
+    Output('table', 'children'),
+    Input('my-date-picker-single', 'date')
+)
+def update_table(data):
+    date_object = date.fromisoformat(data)
+    dia = date_object.day
+    mes = date_object.month
+    
+    df_analise_dia = df.loc[(df['day']==dia) & (df['month']==mes)]
+    df_analise_dia = df_analise_dia.groupby('pizza_name').agg({'order_details_id':'count', 'quantity':'sum', 'total_price':'sum'})
+    df_analise_dia = df_analise_dia.sort_values(by='total_price', ascending=False)
+    df_analise_dia = df_analise_dia.reset_index()
+    df_analise_dia = df_analise_dia.iloc[0:9]
+    
+    children = dash_table.DataTable(df_analise_dia.to_dict('records'), [{"name": i, "id": i} for i in df_analise_dia.columns])
+    
+    return children
+    
 
 # Servidor  =================
 if __name__=='__main__':
