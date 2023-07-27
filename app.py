@@ -174,6 +174,7 @@ def update_table(data):
     df_analise_dia = df_analise_dia.sort_values(by='total_price', ascending=False)
     df_analise_dia = df_analise_dia.reset_index()
     df_analise_dia = df_analise_dia.iloc[0:9]
+    df_analise_dia = df_analise_dia.rename(columns={"pizza_name": "Pizza", "order_details_id": "N° Pedidos", "quantity":"Quantidade", "total_price":"Faturamento Total"})
     
     children = dash_table.DataTable(df_analise_dia.to_dict('records'), [{"name": i, "id": i} for i in df_analise_dia.columns])
     
