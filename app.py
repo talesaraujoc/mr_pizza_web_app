@@ -189,7 +189,7 @@ def update_table(data):
     
     columnDefs = [{"field": i} for i in df_analise_dia.columns]
     
-    children = dag.AgGrid(id="pizza-top-8-table", rowData=df_analise_dia.to_dict("records"), columnDefs=columnDefs, columnSize="sizeToFit")
+    children = [html.H6('TOP 8 (diário)'),dag.AgGrid(id="pizza-top-8-table", rowData=df_analise_dia.to_dict("records"), columnDefs=columnDefs, columnSize="sizeToFit")]
     
     return children
     
