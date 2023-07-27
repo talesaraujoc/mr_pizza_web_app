@@ -15,7 +15,7 @@ import dash_ag_grid as dag
 load_figure_template("united")
 
 app = dash.Dash(external_stylesheets=[dbc.themes.UNITED])
-
+server = app.server
 
 # DataFrame =================
 
