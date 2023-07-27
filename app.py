@@ -11,9 +11,9 @@ from plotly.subplots import make_subplots
 
 
 # Servidor
-load_figure_template("minty")
+load_figure_template("united")
 
-app = dash.Dash(external_stylesheets=[dbc.themes.MINTY])
+app = dash.Dash(external_stylesheets=[dbc.themes.UNITED])
 
 
 # DataFrame =================
@@ -61,7 +61,11 @@ card_avg_dia = dbc.Card([
     ],
     style={"width": "90%", 'height':'100%'})
 
+
 fig_grafico_vendas_mes = px.bar(data_frame=faturamento_by_mes, x='month_extenso', y='total_price', title="Faturamento Mensal", text_auto='.2s')
+
+card_grafico_um = dbc.Card(dbc.CardBody([dcc.Graph(figure=fig_grafico_vendas_mes, id='grafico-01-r2/c1/r2', style={'padding-top':'0px', 'height':'400px'})]), style={"width": "100%", 'height':'100%'})
+
 
 # Layout    =================
 app.layout = html.Div([
@@ -74,19 +78,20 @@ app.layout = html.Div([
                         dbc.Col([dbc.Card(card_avg_dia, color="primary")], lg=3)
                         ]), 
                     
-                    dbc.Row(dcc.Graph(figure=fig_grafico_vendas_mes, id='grafico-01-r2/c1/r2')), 
+                    dbc.Row(card_grafico_um, style={'margin-left': '5px', 'margin-right':'5px', 'margin-top':'10px'}, justify='center'), 
                     
-                    dbc.Row([
+                    dbc.Row(dbc.Card(dbc.CardBody([
                         dcc.Dropdown(options=lista_meses, value=lista_meses[0], id='dpd-01-lista_meses', style={'width':'50%'}),
                         html.Hr(style={'margin-top':'15px'}),
                         dcc.Graph(id='grafico-02-r2/c1/r3')
-                        ])
+                        ])), style={'margin-left': '5px', 'margin-right':'5px', 'margin-top':'10px'}, justify='center')
                 ], 
         lg=6),
         
         
         dbc.Col([
-                dbc.Row([dbc.Col([
+                dbc.Row([
+                        dbc.Col([
                                 dcc.DatePickerSingle(
                                 id='my-date-picker-single',
                                 month_format='DD MM, YYYY',
@@ -95,12 +100,12 @@ app.layout = html.Div([
                                 date=date(2015, 7, 1)),
                                 ], lg=2),
                          
-                         dbc.Col([dcc.Graph(id='grafico-03-data')], lg=6),
+                        dbc.Col([dcc.Graph(id='grafico-03-data')], lg=6),
                          
-                         dbc.Col(dcc.Graph(id='grafico-04-pizza'), lg=4)
-                         ]), 
+                        dbc.Col(dcc.Graph(id='grafico-04-pizza'), lg=4)
+                         ], style={'margin-top':'110px'}), 
                  
-                dbc.Row(html.Div(id='table'))], 
+                dbc.Row(html.Div(id='table'), style={'margin-top':'40px'})], 
         lg=6)
         
     ], style={'margin':'8px'})
@@ -177,4 +182,4 @@ def update_table(data):
 
 # Servidor  =================
 if __name__=='__main__':
-    app.run_server(debug=False)
+    app.run_server(debug=True)
